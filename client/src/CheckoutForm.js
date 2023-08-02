@@ -18,9 +18,36 @@ export default function CheckoutForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!stripe||!elements)return;
+
+    setIsProcessing(true)
+
+    // wait for stripe to confirm payment 
+    // in NO redirect case paymentIntent will be returned
+    const {error,paymentIntent}=await stripe.confirmPayment({
+      elements,
+      confirmParams:{
+        return_url:`${window.location.origin}/completion`,
+      },
+      redirect:'if_required'
+    })
+
+    console.log(error)
+
+    if (error) {
+      // Show error to your customer (for example, payment details incomplete)
+     setMessage(error.message);
+    } else if(paymentIntent && paymentIntent.status==='succeeded'){
+      setMessage('Payment status: '+paymentIntent.status)
+    }
+    else {
+     setMessage('Unexpected state')
+    }
+
+    setIsProcessing(false)
   };
 
-
+console.log(message)
   /**
    * Payment Element
    * PaymentElement	Collects payment details for 25+ payment methods from around the globe. See the Payment Element docs. https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=elements&client=react
