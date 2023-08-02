@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import {loadStripe} from '@stripe/stripe-js'
+import {loadStripe} from '@stripe/stripe-js';
+import {Elements} from '@stripe/react-stripe-js'
+import CheckoutForm from './CheckoutForm'
+
 function Payment(props) {
 
   const[stripePromise,setStripePromise]=useState(null)
@@ -38,9 +41,14 @@ function Payment(props) {
   },
   // needs to run once
   [])
+
+  const hasStripeAndSecret=stripePromise&&clientSecret
   return (
     <>
       <h1>React Stripe and the Payment Element</h1>
+   {hasStripeAndSecret&&   <Elements stripe={stripePromise} options={{clientSecret}}>
+      <CheckoutForm/>
+      </Elements>}
     </>
   );
 }
