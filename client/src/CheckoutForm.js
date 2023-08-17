@@ -11,10 +11,12 @@ export default function CheckoutForm() {
    * The useStripe hook returns a reference to the Stripe instance passed to the Elements provider. If you need to access the Stripe object from a class component, use ElementsConsumer instead.
    */
   const stripe=useStripe();
+
   /**
    * To safely pass the payment information collected by the Payment Element to the Stripe API, access the Elements instance so that you can use it with stripe.confirmPayment. If you use the React Hooks API, then useElements is the recommended way to access a mounted Element. If you need to access an Element from a class component, use ElementsConsumer instead.
    */
   const elements = useElements();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,16 +25,26 @@ export default function CheckoutForm() {
     setIsProcessing(true)
 
     // wait for stripe to confirm payment 
-    // in NO redirect case paymentIntent will be returned
+    // in NO redirect case paymentIntent will be returned   
+    /**
+     * If the confirmation fails, the Promise will resolve with an {error} object that describes the failure. When the error type is card_error or validation_error, you can display the error message in error.message directly to your user. An error type of invalid_request_error could be due to an invalid request or 3DS authentication failures.
+     */
     const {error,paymentIntent}=await stripe.confirmPayment({
       elements,
       confirmParams:{
         return_url:`${window.location.origin}/completion`,
+        payment_method_data: {
+          billing_details: {
+            name: 'Jenny Rosen',
+            email: 'jenny.rosen@example.com',
+          }
+        },
+        
       },
       redirect:'if_required'
     })
 
-    console.log(error)
+    console.log(paymentIntent)
 
     if (error) {
       // Show error to your customer (for example, payment details incomplete)
