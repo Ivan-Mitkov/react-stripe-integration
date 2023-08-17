@@ -1,6 +1,7 @@
 
 import {Elements} from '@stripe/react-stripe-js'
 import CheckoutForm from './CheckoutForm'
+import AddressForm from './AddressForm';
 
 import useStripeLoader from "./hooks";
 

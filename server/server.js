@@ -28,6 +28,7 @@ app.post("/create-payment-intent", async (req, res) => {
       currency: 'BGN',
       // amounts in cents
       amount:'1999',
+      setup_future_usage:'off_session',
       // choose payment methods from stripe dashboard
       automatic_payment_methods:{
         enabled: true,

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useStripe,useElements } from "@stripe/react-stripe-js";
-import { PaymentElement } from "@stripe/react-stripe-js";
+import { PaymentElement,LinkAuthenticationElement } from "@stripe/react-stripe-js";
+import AddressForm from './AddressForm';
 
 export default function CheckoutForm() {
   const [message, setMessage] = useState(null);
+  const[email,setEmail]=useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-
+console.log(AddressForm)
   // get stripe and elements
   /**
    * The useStripe hook returns a reference to the Stripe instance passed to the Elements provider. If you need to access the Stripe object from a class component, use ElementsConsumer instead.
@@ -33,12 +35,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams:{
         return_url:`${window.location.origin}/completion`,
-        payment_method_data: {
-          billing_details: {
-            name: 'Jenny Rosen',
-            email: 'jenny.rosen@example.com',
-          }
-        },
+        setup_future_usage:  "off_session",
         
       },
       redirect:'if_required'
@@ -59,6 +56,8 @@ export default function CheckoutForm() {
     setIsProcessing(false)
   };
 
+  
+
 console.log(message)
   /**
    * Payment Element
@@ -66,7 +65,20 @@ console.log(message)
    */
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+            {/* <LinkAuthenticationElement id="link-authentication-element"
+             // Access the email value like so:
+        onChange={(event) => {
+         setEmail(event.value.email);
+        }}
+        //
+        // Prefill the email field like so:
+        options={{defaultValues: {email: 'foo@bar.com'}}}
+        /> */}
+
       <PaymentElement/>
+      <h3>Shipping address</h3>
+          <AddressForm
+          />
       <button disabled={isProcessing} id="submit">
         <span id="button-text">
           {isProcessing ? "Processing ... " : "Pay now"}
