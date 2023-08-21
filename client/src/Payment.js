@@ -1,7 +1,6 @@
 
 import {Elements} from '@stripe/react-stripe-js'
 import CheckoutForm from './CheckoutForm'
-import AddressForm from './AddressForm';
 
 import useStripeLoader from "./hooks";
 
@@ -9,7 +8,6 @@ function Payment(props) {
 
   const {stripePromise,clientSecret}=useStripeLoader("/config","/create-payment-intent")
   
-
   const hasStripeAndSecret=stripePromise&&clientSecret
 
   const THEME={
@@ -65,7 +63,7 @@ function Payment(props) {
        */}
    {hasStripeAndSecret&&
       <Elements stripe={stripePromise} options={{clientSecret,appearance}}>
-          <CheckoutForm/>
+          <CheckoutForm />
       </Elements>}
     </>
   );

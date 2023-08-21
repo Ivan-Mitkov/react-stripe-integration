@@ -3,11 +3,13 @@ import { useStripe,useElements } from "@stripe/react-stripe-js";
 import { PaymentElement,LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import AddressForm from './AddressForm';
 
-export default function CheckoutForm() {
+export default function CheckoutForm({redirect}) {
+  console.log('CheckoutForm redirect',redirect);
   const [message, setMessage] = useState(null);
   const[email,setEmail]=useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-console.log(AddressForm)
+  const [isSavingCard, setIsSavingCard] = useState(false);
+
   // get stripe and elements
   /**
    * The useStripe hook returns a reference to the Stripe instance passed to the Elements provider. If you need to access the Stripe object from a class component, use ElementsConsumer instead.
@@ -34,9 +36,7 @@ console.log(AddressForm)
     const {error,paymentIntent}=await stripe.confirmPayment({
       elements,
       confirmParams:{
-        return_url:`${window.location.origin}/completion`,
-        setup_future_usage:  "off_session",
-        
+        return_url:`${window.location.origin}/completion`,        
       },
       redirect:'if_required'
     })
@@ -74,11 +74,12 @@ console.log(message)
         // Prefill the email field like so:
         options={{defaultValues: {email: 'foo@bar.com'}}}
         /> */}
-
       <PaymentElement/>
-      <h3>Shipping address</h3>
-          <AddressForm
-          />
+      {/* <h3>Shipping address</h3>
+          <AddressForm/>
+          <div >
+              <label ><input type="checkbox" onChange={()=>setIsSavingCard(!isSavingCard)} /> Save card for future payments</label>
+            </div> */}
       <button disabled={isProcessing} id="submit">
         <span id="button-text">
           {isProcessing ? "Processing ... " : "Pay now"}
